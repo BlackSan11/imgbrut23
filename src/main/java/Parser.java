@@ -28,11 +28,11 @@ public class Parser extends Thread {
                     String title = doc.title();
                     String image = doc.getElementById("main-image").attr("src");
                     String imageLo = image.toLowerCase();
-                    if((!imageLo.contains("2014") & !imageLo.contains("2015") & !imageLo.contains("2016") & !imageLo.contains("2013")) & (image.contains("2018") | image.contains("IMG") | imageLo.contains("photo") | imageLo.contains("dsc") | imageLo.contains("mtp") | imageLo.contains("image")) ){
+                    /*if((!imageLo.contains("2014") & !imageLo.contains("2015") & !imageLo.contains("2016") & !imageLo.contains("2013")) & (image.contains("2018") | image.contains("IMG") | imageLo.contains("photo") | imageLo.contains("dsc") | imageLo.contains("mtp") | imageLo.contains("image")) ){
                         System.out.println(Thread.currentThread().getName() + ":: Title : " + title + " " + image);
                         new Sender(image).start();
-                    }
-
+                    }*/
+                    new Sender(image).start();
                 } catch (ConnectException ee){
 
                 } catch (SocketTimeoutException eee){
