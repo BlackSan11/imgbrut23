@@ -1,3 +1,4 @@
+import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,7 +21,6 @@ public class Parser extends Thread {
     public Parser(SocksProxy proxy) {
         this.proxy = proxy;
         System.out.println(proxy.toString() + " started");
-        new Sender("ddd").start();
     }
 
     String randomString(int len) {
@@ -39,18 +39,23 @@ public class Parser extends Thread {
             BufferedWriter errorsLF = new BufferedWriter(new FileWriter("errors.log"));
             String id;
             while (true) {
+
                 id = randomString(9);
                 try {
-                    //Document doc = Jsoup.connect("https://postimg.cc/image/"+id+"/").get();
-                    Document doc = Jsoup.connect("https://postimg.cc/gallery/" + id + "/").proxy(proxy).get();
+                    //Document doc = Jsoup.connect("https://postimg.cc/gallery/"+id+"/").get();
+                    Connection.Response doc = Jsoup.connect("https://postimg.cc/gallery/" + id + "/")
+                            .proxy(proxy)
+                            .userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0")
+                            .execute();
                     //https://postimg.cc/gallery/3i7dgk7z5/
-                    String image = doc.getElementById("code_gallery").val();
+                    String image = doc.parse().getElementById("code_gallery").val();
                     System.out.println(image);
                     System.out.println("##########################################################");
                     goodsLF.write(id + "\n");
                     goodsLF.flush();
                     new Sender(image).start();
                 } catch (HttpStatusException e) {
+                    e.printStackTrace();
                     if (e.getStatusCode() == 404) {
                         badsLF.write(id + "\n");
                         badsLF.flush();
@@ -59,10 +64,15 @@ public class Parser extends Thread {
                         errorsLF.flush();
                     }
                 } catch (IOException e) {
+                    e.printStackTrace();
                     errorsLF.write(id + "\n");
                     errorsLF.flush();
                 }
-
+                try {
+                    Thread.sleep(15000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
         } catch (IOException e) {

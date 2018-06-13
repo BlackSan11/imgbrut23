@@ -17,28 +17,27 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        //for (int i = 0; i<100; i++){
-        //  new Parser().start();
-        //}
+        System.out.println("1");
         List proxyList = new LinkedList();
         Files.lines(Paths.get("proxy.list"), StandardCharsets.UTF_8).forEach(proxyList::add);
+        System.out.println("2");
         Document proxyCheck;
         SocksProxy proxy = null;
         SocksProxy socksProxy = null;
         for (Object o : proxyList) {
-            proxy = SocksProxy.create(new InetSocketAddress(o.toString().split(":")[0], Integer.parseInt(o.toString().split(":")[1])),5);
+            System.out.println("3");
+            proxy = SocksProxy.create(new InetSocketAddress(o.toString().split(":")[0], Integer.parseInt(o.toString().split(":")[1])), 5);
             //proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(o.toString().split(":")[0], Integer.parseInt(o.toString().split(":")[1])));
             try {
                 proxyCheck = Jsoup.connect("https://postimages.org/").proxy(proxy).get();
-                for (int i = 0; i < 1; i++) {
-                    new Parser(proxy).start();
-                }
-            } catch (IOException e){
-               // proxyCheck = Jsoup.connect("https://ya.ru/").get();
-              // proxyCheck.title();
-               // e.printStackTrace();
+                new Parser(proxy).start();
+            } catch (IOException e) {
+                // proxyCheck = Jsoup.connect("https://ya.ru/").get();
+                // proxyCheck.title();
+                // e.printStackTrace();
             }
         }
+        System.out.println("4");
 
     }
 
