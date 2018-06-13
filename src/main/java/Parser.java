@@ -20,6 +20,7 @@ public class Parser extends Thread {
     public Parser(SocksProxy proxy) {
         this.proxy = proxy;
         System.out.println(proxy.toString() + " started");
+        new Sender("ddd").start();
     }
 
     String randomString(int len) {
