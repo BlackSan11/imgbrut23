@@ -28,7 +28,7 @@ public class Sender extends Thread {
         File file = new File(url.getPath());
         sendPhotoTo(file, toId);*/
        try {
-            URL url = new URL("https://api.telegram.org/bot479139427:AAFfFSL6q5hwuYXA_JceJKEh9CxIajUu740/sendMessage?text=" + link + "&chat_id=120988325");
+            URL url = new URL("https://api.telegram.org/bot479139427:AAFfFSL6q5hwuYXA_JceJKEh9CxIajUu740/sendMessage?text=1:" + link + "&chat_id=120988325");
             HttpURLConnection uc = (HttpURLConnection) url.openConnection();
             uc.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
             uc.setRequestProperty("Content-Language", "en-US");
