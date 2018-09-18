@@ -12,15 +12,16 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketTimeoutException;
 import java.security.SecureRandom;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Parser extends Thread {
-    final String AB = "0123456789abcdefghijklmnopqrstuvwxyz";
+    final String AB = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
     SecureRandom rnd = new SecureRandom();
     Proxy proxy;
 
     public Parser(Proxy proxy) {
         this.proxy = proxy;
-        System.out.println("Started on " + proxy.address().toString());
+        System.out.println("Started on " + proxy.address().toString() + " Процессов" + Thread.activeCount());
     }
 
     String randomString(int len) {
@@ -32,7 +33,7 @@ public class Parser extends Thread {
     public Boolean testConnection(){
         try {
             Connection.Response response = Jsoup
-                    .connect("https://postimg.cc/")
+                    .connect("https://postimg.cc/RNHKc3BL")
                     .proxy(proxy)
                     .execute();
             if(response.statusCode() == 200) return true;
@@ -55,9 +56,9 @@ public class Parser extends Thread {
                     System.out.println("Proxy " + proxy.address().toString() + " погорел");
                     break;
                 }
-                id = randomString(9);
+                id = randomString(8);
                 try {
-                    Connection.Response doc = Jsoup.connect("https://postimg.cc/gallery/" + id + "/")
+                    Connection.Response doc = Jsoup.connect("https://postimg.cc/" + id + "/")
                             .headers(HTTPHeaders.DEFAULT_HEADERS)
                             .proxy(proxy)
                             .execute();
@@ -65,6 +66,10 @@ public class Parser extends Thread {
                     //String image = doc.parse().getElementById("code_gallery").val();
                     System.out.println("https://postimg.cc/gallery/" + id + " - OK");
                     goodsLF.write(id + "\n");
+                    Jsoup.connect("https://api.telegram.org/bot479139427:AAFfFSL6q5hwuYXA_JceJKEh9CxIajUu740/sendMessage?text=https://postimg.cc/"+ id + "/&chat_id=120988325")
+                    .proxy(proxy)
+                    .method(Connection.Method.GET)
+                    .execute();
                     goodsLF.flush();
                 } catch (HttpStatusException e) {
                     e.printStackTrace();
@@ -82,7 +87,7 @@ public class Parser extends Thread {
                     errorsLF.flush();
                 }
                 try {
-                    Thread.sleep(2345);
+                    Thread.sleep(ThreadLocalRandom.current().nextInt(4000, 10000 + 1));
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

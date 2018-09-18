@@ -29,12 +29,13 @@ public class Main {
                 new Parser(proxy).start();
             } else continue;
         }
-/*        for (String line2 : lines2) {
-            if (testProxySocks(line2.split(":"))) {
-                new Parser().start();
+        /*for (String line2 : lines2) {
+            SocketAddress proxyAddr = new InetSocketAddress(line2.split(":")[0], Integer.parseInt(line2.split(":")[1]));
+            Proxy proxy = SocksProxy.create(proxyAddr, 4);
+            if (testProxySocks(proxy)) {
+                new Parser(proxy).start();
             } else continue;
-        }
-        */
+        }*/
         while (true) {
             try {
                 Thread.sleep(3000);
@@ -67,18 +68,17 @@ public class Main {
         return null;
     }
 
-    public static Boolean testProxySocks(String[] proxy) {
+    public static Boolean testProxySocks(Proxy proxy) {
         System.setProperty("socksProxyVersion", "4");
         Connection.Response response = null;
         try {
-            SocketAddress proxyAddr = new InetSocketAddress(proxy[0], Integer.parseInt(proxy[1]));
-            Proxy proxy1 = SocksProxy.create(proxyAddr, 4);
+
             response = Jsoup
                     .connect("https://ya.ru")
-                    .proxy(proxy1)
+                    .proxy(proxy)
                     .execute();
             if (response.statusCode() == 200) return true;
-            System.out.println(proxy[0] + " " + response.statusCode());
+            System.out.println(proxy.address().toString() + " " + response.statusCode());
         } catch (IOException e) {
             e.printStackTrace();
             return false;
