@@ -31,7 +31,10 @@ public class Parser extends Thread {
     }
     public Boolean testConnection(){
         try {
-            Connection.Response response = Jsoup.connect("https://postimg.cc/gallery/3i7dgk7z8/").execute();
+            Connection.Response response = Jsoup
+                    .connect("https://postimg.cc/")
+                    .proxy(proxy)
+                    .execute();
             if(response.statusCode() == 200) return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -43,9 +46,9 @@ public class Parser extends Thread {
         try {
             /*System.setProperty("http.proxyHost", "80.211.164.247");
             System.setProperty("http.proxyPort", "3128");*/
-            BufferedWriter badsLF = new BufferedWriter(new FileWriter("bads.log"));
-            BufferedWriter goodsLF = new BufferedWriter(new FileWriter("goods.log"));
-            BufferedWriter errorsLF = new BufferedWriter(new FileWriter("errors.log"));
+            BufferedWriter badsLF = new BufferedWriter(new FileWriter("bads.log", true));
+            BufferedWriter goodsLF = new BufferedWriter(new FileWriter("goods.log", true));
+            BufferedWriter errorsLF = new BufferedWriter(new FileWriter("errors.log", true));
             String id;
             while (true) {
                 if(!testConnection()) {
@@ -56,6 +59,7 @@ public class Parser extends Thread {
                 try {
                     Connection.Response doc = Jsoup.connect("https://postimg.cc/gallery/" + id + "/")
                             .headers(HTTPHeaders.DEFAULT_HEADERS)
+                            .proxy(proxy)
                             .execute();
                     //https://postimg.cc/gallery/3i7dgk7z5/
                     //String image = doc.parse().getElementById("code_gallery").val();
@@ -78,7 +82,7 @@ public class Parser extends Thread {
                     errorsLF.flush();
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2345);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

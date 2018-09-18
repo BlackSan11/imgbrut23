@@ -23,14 +23,24 @@ public class Main {
         //new Parser().start();
         List<String> lines = Files.readAllLines(Paths.get(PROXY_LIST_FILE), StandardCharsets.UTF_8);
         List<String> lines2 = Files.readAllLines(Paths.get(PROXY_LIST_FILE2), StandardCharsets.UTF_8);
-        /*for (String line : lines) {
-            testProxy(line.split(":"));
-        }*/
-        String[] proxyt = {"163.172.85.4", "8080"};
-        testProxy(proxyt);
-        String[] proxyt1 = {"168.197.156.5", "4145"};
-        testProxySocks(proxyt1);
-        while (true){
+        for (String line : lines) {
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(line.split(":")[0], Integer.parseInt(line.split(":")[1])));
+            if (testProxy(proxy)) {
+                new Parser(proxy).start();
+            } else continue;
+        }
+/*        for (String line2 : lines2) {
+            if (testProxySocks(line2.split(":"))) {
+                new Parser().start();
+            } else continue;
+        }
+        */
+        while (true) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             if (Thread.activeCount() > 0) System.out.println("Запущено " + Thread.activeCount() + " процессов.");
             else {
                 System.out.println("Все процессы завершены");
@@ -39,18 +49,17 @@ public class Main {
         }
     }
 
-    public static Boolean testProxy(String[] proxy) {
+    public static Boolean testProxy(Proxy proxy) {
         Connection.Response response = null;
         try {
-            Proxy proxy1 = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxy[0], Integer.parseInt(proxy[1])));
             response = Jsoup
                     .connect("https://ya.ru")
-                    .proxy(proxy1)
+                    .proxy(proxy)
                     .headers(HTTPHeaders.DEFAULT_HEADERS)
                     .method(Connection.Method.GET)
                     .execute();
             if (response.statusCode() == 200) return true;
-            System.out.println(proxy[0] + " " + response.statusCode());
+            System.out.println(proxy.address().toString() + " " + response.statusCode());
         } catch (IOException e) {
             e.printStackTrace();
             return false;
