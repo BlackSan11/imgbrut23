@@ -26,12 +26,13 @@ public class Main {
         new IdsGenerator().start();
         DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
         defaultBotOptions.setProxyType(DefaultBotOptions.ProxyType.HTTP);
-        defaultBotOptions.setProxyHost("54.38.142.183");
+        defaultBotOptions.setProxyHost("54.38.54.208");
         defaultBotOptions.setProxyPort(54321);
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
+        Bot bot = new Bot(defaultBotOptions);
         try {
-            telegramBotsApi.registerBot(new Bot(defaultBotOptions));
+            telegramBotsApi.registerBot(bot);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
@@ -39,7 +40,7 @@ public class Main {
         //List<String> lines2 = Files.readAllLines(Paths.get(PROXY_LIST_FILE2), StandardCharsets.UTF_8);
         for (String line : lines) {
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(line.split(":")[0], Integer.parseInt(line.split(":")[1])));
-            new ru.red.CustomProxy(proxy).start();
+            new ru.red.CustomProxy(proxy, bot).start();
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {

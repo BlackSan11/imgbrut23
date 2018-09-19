@@ -9,14 +9,16 @@ import java.net.Proxy;
 public class CustomProxy extends Thread {
 
     Proxy webProxy;
+    Bot bot;
 
-    public CustomProxy(Proxy webProxy) {
+    public CustomProxy(Proxy webProxy, Bot bot) {
         this.webProxy = webProxy;
+        this.bot = bot;
     }
 
     @Override
     public void run() {
-        if(testMy()) new Parser(this.webProxy).start();
+        if(testMy()) new Parser(this.webProxy, bot).start();
     }
 
     private Boolean testMy() {

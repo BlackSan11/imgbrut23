@@ -95,7 +95,7 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendMsg(Long chatID, String msgText) {
+    public void sendMsg(Long chatID, String msgText) {
         SendMessage msg = new SendMessage();
         msg.setReplyMarkup(getDownKeyboard())
                 .setText(msgText)
@@ -120,7 +120,7 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendPhoto(Long chatID, String msgText, String photoURL, String sID) {
+    public void sendPhoto(Long chatID, String msgText, String photoURL, String sID) {
         System.out.println(photoURL);
         SendPhoto msg = new SendPhoto();
         msg.setReplyMarkup(getDownKeyboard())
