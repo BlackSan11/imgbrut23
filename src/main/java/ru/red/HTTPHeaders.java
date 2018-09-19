@@ -1,3 +1,5 @@
+package ru.red;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;

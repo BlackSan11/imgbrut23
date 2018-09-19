@@ -1,3 +1,5 @@
+package ru.red;
+
 public class SinglePhoto {
     private String sID = "";
     private String act = "";

@@ -1,31 +1,45 @@
+package ru.red;
+
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.jsoup.Connection;
-import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import sun.net.SocksProxy;
-
-
+import org.telegram.telegrambots.ApiContextInitializer;
+import org.telegram.telegrambots.bots.DefaultBotOptions;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.facilities.TelegramHttpClientBuilder;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.IOException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.LinkedList;
 import java.util.List;
 
-import static com.sun.org.apache.xalan.internal.lib.ExsltStrings.split;
 
 public class Main {
     static String PROXY_LIST_FILE = "proxy.list";
     static String PROXY_LIST_FILE2 = "proxyS.list";
 
     public static void main(String[] args) throws IOException {
+        DBO.getInstance();
         new IdsGenerator().start();
+        DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
+        defaultBotOptions.setProxyType(DefaultBotOptions.ProxyType.HTTP);
+        defaultBotOptions.setProxyHost("54.38.142.183");
+        defaultBotOptions.setProxyPort(54321);
+        ApiContextInitializer.init();
+        TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
+        try {
+            telegramBotsApi.registerBot(new Bot(defaultBotOptions));
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
         List<String> lines = Files.readAllLines(Paths.get(PROXY_LIST_FILE), StandardCharsets.UTF_8);
         //List<String> lines2 = Files.readAllLines(Paths.get(PROXY_LIST_FILE2), StandardCharsets.UTF_8);
         for (String line : lines) {
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(line.split(":")[0], Integer.parseInt(line.split(":")[1])));
-            new CustomProxy(proxy).start();
+            new ru.red.CustomProxy(proxy).start();
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {
@@ -44,9 +58,7 @@ public class Main {
                 break;
             }
         }
-
     }
-
 
 
     public static Boolean testProxySocks(Proxy proxy) {

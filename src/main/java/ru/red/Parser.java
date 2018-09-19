@@ -1,16 +1,14 @@
+package ru.red;
+
 import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import sun.net.SocksProxy;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.net.SocketTimeoutException;
 import java.security.SecureRandom;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -23,7 +21,8 @@ public class Parser extends Thread {
         this.proxy = proxy;
         System.out.println("Started on " + proxy.address().toString() + " Процессов" + Thread.activeCount());
     }
-    //" + DBO.getInstance().getLiveSinglePhoto() + "/"
+
+    //" + ru.red.DBO.getInstance().getLiveSinglePhoto() + "/"
     public Boolean testConnection() {
         try {
             Connection.Response response = Jsoup
@@ -59,31 +58,26 @@ public class Parser extends Thread {
                             .execute();
                     //https://postimg.cc/gallery/3i7dgk7z5/
                     //String image = doc.parse().getElementById("code_gallery").val();
-                    System.out.println("https://postimg.cc/gallery/" + id + " - OK");
                     goodsLF.write(id + "\n");
                     goodsLF.flush();
-                    DBO.getInstance().updateSinglePhotoAct(id, "l");
-                    Jsoup.connect("https://api.telegram.org/bot479139427:AAFfFSL6q5hwuYXA_JceJKEh9CxIajUu740/sendMessage?text=https://postimg.cc/" + id + "/&chat_id=120988325")
-                            .proxy(proxy)
-                            .method(Connection.Method.GET)
-                            .execute();
+                    Document parsedDoc = doc.parse();
+                    System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + parsedDoc.getElementById("download").attr("href"));
+                    DBO.getInstance().updateAfterCheck(id, "exist",  parsedDoc.getElementsByClass("imagename").text(), parsedDoc.getElementById("download").attr("href"));
                 } catch (HttpStatusException e) {
                     e.printStackTrace();
                     //ЕСЛИ 404
                     if (e.getStatusCode() == 404) {
                         badsLF.write(id + "\n");
                         badsLF.flush();
-                        DBO.getInstance().updateSinglePhotoAct(id, "d");
+                        DBO.getInstance().updateAfterCheck(id, "notexist");
                     } else { //ЕСЛИ ДРУГАЯ
                         errorsLF.write(id + "\n");
                         errorsLF.flush();
-                        DBO.getInstance().updateSinglePhotoAct(id, "eh");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                     errorsLF.write(id + "\n");
                     errorsLF.flush();
-                    DBO.getInstance().updateSinglePhotoAct(id, "e");
                 }
                 try {
                     Thread.sleep(ThreadLocalRandom.current().nextInt(4000, 10000 + 1));

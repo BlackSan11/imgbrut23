@@ -1,3 +1,5 @@
+package ru.red;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 public class T {

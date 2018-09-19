@@ -1,3 +1,5 @@
+package ru.red;
+
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
