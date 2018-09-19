@@ -13,7 +13,7 @@ import java.util.List;
 public class DBO {
 
     private static DBO INSTANCE = new DBO();
-    private MongoClient mongoClient = new MongoClient("192.168.20.180", 27023);
+    private MongoClient mongoClient = new MongoClient("195.146.74.90", 27023);
     private MongoDatabase dbMongo = mongoClient.getDatabase("imgData");
     private MongoCollection singlePhotos = dbMongo.getCollection("singlePhotos");
 
