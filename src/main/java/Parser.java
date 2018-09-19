@@ -23,26 +23,21 @@ public class Parser extends Thread {
         this.proxy = proxy;
         System.out.println("Started on " + proxy.address().toString() + " Процессов" + Thread.activeCount());
     }
-
-    String randomString(int len) {
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++)
-            sb.append(AB.charAt(rnd.nextInt(AB.length())));
-        return sb.toString();
-    }
-    public Boolean testConnection(){
+    //" + DBO.getInstance().getLiveSinglePhoto() + "/"
+    public Boolean testConnection() {
         try {
             Connection.Response response = Jsoup
-                    .connect("https://postimg.cc/RNHKc3BL")
+                    .connect("https://postimg.cc/")
                     .proxy(proxy)
                     .execute();
-            if(response.statusCode() == 200) return true;
+            if (response.statusCode() == 200) return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
         return null;
     }
+
     public void run() {
         try {
             /*System.setProperty("http.proxyHost", "80.211.164.247");
@@ -52,11 +47,11 @@ public class Parser extends Thread {
             BufferedWriter errorsLF = new BufferedWriter(new FileWriter("errors.log", true));
             String id;
             while (true) {
-                if(!testConnection()) {
-                    System.out.println("Proxy " + proxy.address().toString() + " погорел");
+                if (!testConnection()) {
+                    System.out.println(proxy.address().toString() + " не работает");
                     break;
                 }
-                id = randomString(8);
+                id = DBO.getInstance().getSinglePhoto();
                 try {
                     Connection.Response doc = Jsoup.connect("https://postimg.cc/" + id + "/")
                             .headers(HTTPHeaders.DEFAULT_HEADERS)
@@ -66,25 +61,29 @@ public class Parser extends Thread {
                     //String image = doc.parse().getElementById("code_gallery").val();
                     System.out.println("https://postimg.cc/gallery/" + id + " - OK");
                     goodsLF.write(id + "\n");
-                    Jsoup.connect("https://api.telegram.org/bot479139427:AAFfFSL6q5hwuYXA_JceJKEh9CxIajUu740/sendMessage?text=https://postimg.cc/"+ id + "/&chat_id=120988325")
-                    .proxy(proxy)
-                    .method(Connection.Method.GET)
-                    .execute();
                     goodsLF.flush();
+                    DBO.getInstance().updateSinglePhotoAct(id, "l");
+                    Jsoup.connect("https://api.telegram.org/bot479139427:AAFfFSL6q5hwuYXA_JceJKEh9CxIajUu740/sendMessage?text=https://postimg.cc/" + id + "/&chat_id=120988325")
+                            .proxy(proxy)
+                            .method(Connection.Method.GET)
+                            .execute();
                 } catch (HttpStatusException e) {
                     e.printStackTrace();
                     //ЕСЛИ 404
                     if (e.getStatusCode() == 404) {
                         badsLF.write(id + "\n");
                         badsLF.flush();
+                        DBO.getInstance().updateSinglePhotoAct(id, "d");
                     } else { //ЕСЛИ ДРУГАЯ
                         errorsLF.write(id + "\n");
                         errorsLF.flush();
+                        DBO.getInstance().updateSinglePhotoAct(id, "eh");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                     errorsLF.write(id + "\n");
                     errorsLF.flush();
+                    DBO.getInstance().updateSinglePhotoAct(id, "e");
                 }
                 try {
                     Thread.sleep(ThreadLocalRandom.current().nextInt(4000, 10000 + 1));
