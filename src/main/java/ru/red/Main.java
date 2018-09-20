@@ -22,8 +22,9 @@ public class Main {
     static String PROXY_LIST_FILE2 = "proxyS.list";
 
     public static void main(String[] args) throws IOException {
-        DBO.getInstance();
-        new IdsGenerator().start();
+        new ProxyOperator().start();
+        //DBO.getInstance();
+        //new IdsGenerator().start();
         DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
         defaultBotOptions.setProxyType(DefaultBotOptions.ProxyType.HTTP);
         defaultBotOptions.setProxyHost("54.38.54.208");
@@ -36,7 +37,7 @@ public class Main {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
-        List<String> lines = Files.readAllLines(Paths.get(PROXY_LIST_FILE), StandardCharsets.UTF_8);
+        /*List<String> lines = Files.readAllLines(Paths.get(PROXY_LIST_FILE), StandardCharsets.UTF_8);
         //List<String> lines2 = Files.readAllLines(Paths.get(PROXY_LIST_FILE2), StandardCharsets.UTF_8);
         for (String line : lines) {
             Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(line.split(":")[0], Integer.parseInt(line.split(":")[1])));
@@ -58,7 +59,7 @@ public class Main {
                 System.out.println("Все процессы завершены");
                 break;
             }
-        }
+        }*/
     }
 
 

@@ -17,13 +17,16 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 public class Bot extends TelegramLongPollingBot {
 
     public Bot(DefaultBotOptions options) {
         super(options);
+        System.out.println("бот стартанул");
     }
 
     @Override
@@ -71,12 +74,28 @@ public class Bot extends TelegramLongPollingBot {
                 case "Контейнер":
                     sendMsg(getedMsg.getChatId(), "СФ");
                     break;
+                case "\uD83D\uDCBEИнформация":
+                    Locale loc = new Locale("ru");
+                    NumberFormat digFormatter = NumberFormat.getInstance(loc);
+                    Long checkedCount = DBO2.getInstance().getTotalCountSinglePhoto(1);
+                    Long noValidCount = DBO2.getInstance().getTotalCountSinglePhoto("notexist");
+                    String parserInfo = "Всего записей в БД: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto());
+                    parserInfo += "\nПроверенно: " + digFormatter.format(checkedCount);
+                    parserInfo += "\nВалидных: " + digFormatter.format((checkedCount - noValidCount));
+                    parserInfo += " (" + String.valueOf((double) (checkedCount - noValidCount) / (checkedCount) * 100.0).substring(0, 3) + " %) ";
+                    parserInfo += "\nНе валидных: " + digFormatter.format(noValidCount);
+                    parserInfo += "\nНе просмотренных: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto("exist"));
+                    parserInfo += "\nСохраненных: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto("saved"));
+                    parserInfo += "\nСкрытых: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto("hide"));
+                    sendMsg(getedMsg.getChatId(), parserInfo);
+                    break;
                 default:
                     sendMsg(getedMsg.getChatId(), "Неизвестная команда");
                     break;
             }
         }
     }
+
 
     @Override
     public String getBaseUrl() {
@@ -184,11 +203,14 @@ public class Bot extends TelegramLongPollingBot {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         KeyboardRow row1 = new KeyboardRow();
         KeyboardRow row2 = new KeyboardRow();
+        KeyboardRow row3 = new KeyboardRow();
         row1.add(new KeyboardButton("\uD83D\uDE80Чекать фото"));
         row2.add(new KeyboardButton("\uD83D\uDCBEИзбранные"));
+        row3.add(new KeyboardButton("\uD83D\uDCBEИнформация"));
         LinkedList<KeyboardRow> keyboardRows = new LinkedList<>();
         keyboardRows.add(row1);
         keyboardRows.add(row2);
+        keyboardRows.add(row3);
         replyKeyboardMarkup.setKeyboard(keyboardRows);
         return replyKeyboardMarkup;
     }

@@ -19,7 +19,6 @@ public class DBO {
 
     private DBO() {
         //singlePhotos.drop();
-        System.out.println(singlePhotos.countDocuments());
     }
 
     public static DBO getInstance() {
@@ -111,7 +110,7 @@ public class DBO {
                 new BasicDBObject("$set", newDocument));
     }
 
-    private Boolean checkSinglePhoto(String sID) {
+    public Boolean checkSinglePhoto(String sID) {
         BasicDBObject query = new BasicDBObject();
         query.append("sID", sID);
         if (singlePhotos.find(query).limit(1).first() != null) {
@@ -119,6 +118,7 @@ public class DBO {
             return true;
         } else return false;
     }
+
 
     public void showSP() {
         System.out.println(singlePhotos.countDocuments());

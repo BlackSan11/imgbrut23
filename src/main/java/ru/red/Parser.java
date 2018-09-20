@@ -63,7 +63,7 @@ public class Parser extends Thread {
                     goodsLF.write(id + "\n");
                     goodsLF.flush();
                     Document parsedDoc = doc.parse();
-                    bot.sendPhoto((long) 120988325, parsedDoc.getElementsByClass("imagename").text(), parsedDoc.getElementById("download").attr("href"), id);
+                    //bot.sendPhoto((long) 120988325, parsedDoc.getElementsByClass("imagename").text(), parsedDoc.getElementById("download").attr("href"), id);
                     System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + parsedDoc.getElementById("download").attr("href"));
                     DBO.getInstance().updateAfterCheck(id, "exist",  parsedDoc.getElementsByClass("imagename").text(), parsedDoc.getElementById("download").attr("href"));
                 } catch (HttpStatusException e) {
