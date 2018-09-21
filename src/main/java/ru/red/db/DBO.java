@@ -1,4 +1,4 @@
-package ru.red;
+package ru.red.db;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;

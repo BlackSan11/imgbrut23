@@ -1,4 +1,4 @@
-package ru.red;
+package ru.red.Tlg;
 
 public class Keybords {
 

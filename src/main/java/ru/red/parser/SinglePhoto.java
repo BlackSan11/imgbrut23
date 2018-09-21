@@ -1,4 +1,4 @@
-package ru.red;
+package ru.red.parser;
 
 public class SinglePhoto {
     private String sID = "";

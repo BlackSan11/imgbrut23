@@ -1,4 +1,4 @@
-package ru.red;
+package ru.red.parser;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

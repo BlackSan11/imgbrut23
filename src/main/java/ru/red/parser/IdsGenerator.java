@@ -1,6 +1,7 @@
-package ru.red;
+package ru.red.parser;
 
 import org.bson.Document;
+import ru.red.db.DBO;
 
 import java.security.SecureRandom;
 import java.util.Date;

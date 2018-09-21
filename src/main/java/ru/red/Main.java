@@ -1,42 +1,49 @@
 package ru.red;
 
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.facilities.TelegramHttpClientBuilder;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.red.Tlg.Bot;
+import ru.red.parser.ParserOperator;
+import ru.red.proxy.MyProxy;
+import ru.red.proxy.ProxyStock;
+
 import java.io.IOException;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 
 
 public class Main {
     static String PROXY_LIST_FILE = "proxy.list";
     static String PROXY_LIST_FILE2 = "proxyS.list";
 
-    public static void main(String[] args) throws IOException {
-        new ProxyOperator().start();
+    public static void main(String[] args) {
+
         //DBO.getInstance();
         //new IdsGenerator().start();
-        DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
-        defaultBotOptions.setProxyType(DefaultBotOptions.ProxyType.HTTP);
-        defaultBotOptions.setProxyHost("54.38.54.208");
-        defaultBotOptions.setProxyPort(54321);
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
-        Bot bot = new Bot(defaultBotOptions);
-        try {
-            telegramBotsApi.registerBot(bot);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+        while (true){
+            System.out.println("перестарт");
+            MyProxy proxyForBot = ProxyStock.getInstance().getFreeOneMyProxy();
+            DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
+            defaultBotOptions.setProxyType(DefaultBotOptions.ProxyType.HTTP);
+            defaultBotOptions.setProxyHost(proxyForBot.getIp());
+            defaultBotOptions.setProxyPort(proxyForBot.getPort());
+            Bot bot = new Bot(defaultBotOptions);
+            try {
+                telegramBotsApi.registerBot(bot);
+                System.out.println("Супер");
+                break;
+            } catch (TelegramApiException e) {
+                continue;
+            }
         }
+        ProxyStock.getInstance();
+        ParserOperator.getINSTANCE();
+
         /*List<String> lines = Files.readAllLines(Paths.get(PROXY_LIST_FILE), StandardCharsets.UTF_8);
         //List<String> lines2 = Files.readAllLines(Paths.get(PROXY_LIST_FILE2), StandardCharsets.UTF_8);
         for (String line : lines) {
