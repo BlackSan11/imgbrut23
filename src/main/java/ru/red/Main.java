@@ -13,11 +13,12 @@ import ru.red.proxy.ProxyStock;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class Main {
-    static String PROXY_LIST_FILE = "proxy.list";
-    static String PROXY_LIST_FILE2 = "proxyS.list";
 
     public static void main(String[] args) {
 
@@ -25,6 +26,7 @@ public class Main {
         //new IdsGenerator().start();
         ApiContextInitializer.init();
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi();
+        Bot bot;
         while (true){
             System.out.println("перестарт");
             MyProxy proxyForBot = ProxyStock.getInstance().getFreeOneMyProxy();
@@ -32,7 +34,7 @@ public class Main {
             defaultBotOptions.setProxyType(DefaultBotOptions.ProxyType.HTTP);
             defaultBotOptions.setProxyHost(proxyForBot.getIp());
             defaultBotOptions.setProxyPort(proxyForBot.getPort());
-            Bot bot = new Bot(defaultBotOptions);
+            bot = new Bot(defaultBotOptions);
             try {
                 telegramBotsApi.registerBot(bot);
                 System.out.println("Супер");
@@ -43,6 +45,15 @@ public class Main {
         }
         ProxyStock.getInstance();
         ParserOperator.getINSTANCE();
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+
+        Bot finalBot = bot;
+        Runnable task = () -> finalBot.sendInfo();
+
+        int initialDelay = 0;
+        int period = 10;
+        executor.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.MINUTES);
+
 
         /*List<String> lines = Files.readAllLines(Paths.get(PROXY_LIST_FILE), StandardCharsets.UTF_8);
         //List<String> lines2 = Files.readAllLines(Paths.get(PROXY_LIST_FILE2), StandardCharsets.UTF_8);

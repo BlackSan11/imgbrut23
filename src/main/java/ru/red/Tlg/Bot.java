@@ -108,7 +108,9 @@ public class Bot extends TelegramLongPollingBot {
                     sendMsg(getedMsg.getChatId(), parserInfo);
                     break;
                 default:
-                    sendMsg(getedMsg.getChatId(), "Неизвестная команда");
+                    if(getedMsg.getText().contains("serv:")){
+                        ParserOperator.getINSTANCE().setServer(getedMsg.getText().split(":")[1]);
+                    }
                     break;
             }
         }
@@ -130,6 +132,26 @@ public class Bot extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendInfo(){
+        Locale loc = new Locale("ru");
+        NumberFormat digFormatter = NumberFormat.getInstance(loc);
+        Long checkedCount = DBO2.getInstance().getTotalCountSinglePhoto(1);
+        Long noValidCount = DBO2.getInstance().getTotalCountSinglePhoto("notexist");
+        String parserInfo = "Всего записей в БД: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto());
+        parserInfo += "\nПрочекано: " + digFormatter.format(checkedCount);
+        parserInfo += "\nВалидных: " + digFormatter.format((checkedCount - noValidCount));
+        parserInfo += " (" + String.valueOf((double) (checkedCount - noValidCount) / (checkedCount) * 100.0).substring(0, 3) + " %) ";
+        parserInfo += "\nНе валидных: " + digFormatter.format(noValidCount);
+        parserInfo += "\nНе просмотренных: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto("exist"));
+        parserInfo += "\nСохраненных: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto("saved"));
+        sendMsg((long) 120988325, "Последний рывок2");
+        parserInfo += "\nПроскроленных: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto("scrolled"));
+        parserInfo += "\nПотоков: " + ParserOperator.getINSTANCE().getThreadsStartedCount();
+        parserInfo += "\nСервер: " + ParserOperator.getINSTANCE().getServer();
+        //sendMsg(getedMsg.getChatId(), "dfrffrerf");
+        sendMsg((long) 120988325, parserInfo);
     }
 
     public void sendMsg(Long chatID, String msgText) {
