@@ -48,7 +48,7 @@ public class DBO {
 
     public synchronized Document getExistSinglePhoto() {
         BasicDBObject query = new BasicDBObject();
-        query.append("status", "exist");
+        query.append("status", "saved");
         Document res = (Document) singlePhotos.find(query).limit(1).first();
         return res;
     }
@@ -62,9 +62,10 @@ public class DBO {
     }
 
 
-    public void updateAfterCheck(String sID, String status, String desc, String fullURL) {
+    public void updateAfterCheck(String sID, String srv, String status, String desc, String fullURL) {
         BasicDBObject newDocument = new BasicDBObject();
         newDocument.put("status", status);
+        newDocument.put("servers", srv);
         newDocument.put("updated", new Date().getTime() / 1000);
         newDocument.put("fullURL", fullURL);
         newDocument.put("desc", desc);
@@ -90,7 +91,7 @@ public class DBO {
 
     public void updateAfterHide(String sID) {
         BasicDBObject newDocument = new BasicDBObject();
-        newDocument.put("status", "hide");
+        newDocument.put("status", "scrolled");
         newDocument.put("updated", new Date().getTime() / 1000);
         BasicDBObject searchQuery = new BasicDBObject();
         searchQuery.append("_id", sID);

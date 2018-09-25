@@ -102,7 +102,7 @@ public class Bot extends TelegramLongPollingBot {
                     parserInfo += "\nНе просмотренных: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto("exist"));
                     parserInfo += "\nСохраненных: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto("saved"));
                     sendMsg(getedMsg.getChatId(), "Последний рывок2");
-                    parserInfo += "\nСкрытых: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto("hide"));
+                    parserInfo += "\nОтброшенных: " + digFormatter.format(DBO2.getInstance().getTotalCountSinglePhoto("scrolled"));
                     parserInfo += "\nПотоков: " + ParserOperator.getINSTANCE().getThreadsStartedCount();
                     //sendMsg(getedMsg.getChatId(), "dfrffrerf");
                     sendMsg(getedMsg.getChatId(), parserInfo);

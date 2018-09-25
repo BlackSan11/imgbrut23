@@ -12,9 +12,11 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ParserThread extends Thread {
 
     Proxy proxy;
+    String userAgent;
 
-    public ParserThread(Proxy proxy) {
+    public ParserThread(Proxy proxy, String userAgent) {
         this.proxy = proxy;
+        this.userAgent = userAgent;
         System.out.println("Parser thread started on " + proxy.address().toString());
     }
 
@@ -22,6 +24,8 @@ public class ParserThread extends Thread {
         try {
             Connection.Response response = Jsoup
                     .connect("https://postimg.cc/")
+                    .headers(HTTPHeaders.DEFAULT_HEADERS)
+                    .header("UserAgent",userAgent)
                     .proxy(proxy)
                     .execute();
             if (response.statusCode() == 200) return true;
@@ -33,7 +37,7 @@ public class ParserThread extends Thread {
     }
 
     public void run() {
-        String id;
+        String id,srv;
         while (true) {
             if (!testConnection()) {
                 System.out.println(proxy.address().toString() + " - не прошло тест, поток завершаеться");
@@ -41,14 +45,17 @@ public class ParserThread extends Thread {
                 break;
             }
             id = DBO.getInstance().getSinglePhoto();
+            srv = ParserOperator.getINSTANCE().getServer();
             try {
-                Connection.Response doc = Jsoup.connect("https://postimg.cc/" + id + "/")
+                Connection.Response doc = Jsoup.connect("https://"+ srv +".postimg.cc/" + id + "/1.jpg")
                         .headers(HTTPHeaders.DEFAULT_HEADERS)
+                        .header("User-Agent", userAgent)
+                        .followRedirects(true)
                         .proxy(proxy)
                         .execute();
                 System.out.println("####200OK-" + id);
                 Document parsedDoc = doc.parse();
-                DBO.getInstance().updateAfterCheck(id, "exist", parsedDoc.getElementsByClass("imagename").text(), parsedDoc.getElementById("download").attr("href"));
+                DBO.getInstance().updateAfterCheck(id, srv, "exist", parsedDoc.getElementsByClass("imagename").text(), parsedDoc.getElementById("download").attr("href"));
             } catch (HttpStatusException e) {
                 System.out.println("####404BAD-" + id);
                 //ЕСЛИ 404

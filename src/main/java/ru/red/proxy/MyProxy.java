@@ -43,9 +43,8 @@ public class MyProxy {
                     .connect("https://google.com")
                     .proxy(proxyObj)
                     .headers(HTTPHeaders.DEFAULT_HEADERS)
-                    .timeout(1000)
+                    .timeout(5000)
                     .execute();
-
             if(response.statusCode() == 200) return true;
         } catch (NoSuchElementException e){
             return false;
