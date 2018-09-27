@@ -67,6 +67,7 @@ public class ProxyStock {
     protected void updateProxyList(LinkedList<MyProxy> newProxyList){
         newProxyList.removeAll(proxyList);
         proxyList.addAll(newProxyList);
+        System.out.println("В прокси листе: " + proxyList.size());
     }
 
 }
@@ -74,7 +75,7 @@ public class ProxyStock {
 class ProxyUpdater extends Thread {
 
     private volatile static LinkedList<MyProxy> proxyList = new LinkedList<>();
-    private final static String PROXY_API_HOST = "http://hidemyna.me/ru/api/proxylist.php/api/proxylist.php?out=plain&type=hs&code=323478756239637";
+    private final static String PROXY_API_HOST = "http://hidemyna.me/ru/api/proxylist.php/api/proxylist.php?out=plain&type=5&code=323478756239637";
 
     public void run() {
         System.out.println("Proxy Updater started..");
@@ -106,7 +107,7 @@ class ProxyUpdater extends Thread {
             String strLine;
             LinkedList<MyProxy> getedProxy = new LinkedList<>();
             while ((strLine = reader.readLine()) != null) {
-                getedProxy.add(new MyProxy(strLine.split(":")[0], Integer.valueOf(strLine.split(":")[1]), Proxy.Type.HTTP));
+                getedProxy.add(new MyProxy(strLine.split(":")[0], Integer.valueOf(strLine.split(":")[1]), Proxy.Type.SOCKS));
             }
             return getedProxy;
         } catch (IOException e) {

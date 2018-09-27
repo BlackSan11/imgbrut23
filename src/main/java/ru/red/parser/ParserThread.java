@@ -23,9 +23,9 @@ public class ParserThread extends Thread {
     public Boolean testConnection() {
         try {
             Connection.Response response = Jsoup
-                    .connect("https://postimg.cc/")
+                    .connect("https://postimg.cc/V0vsQV79")
                     .headers(HTTPHeaders.DEFAULT_HEADERS)
-                    .header("UserAgent",userAgent)
+                    .header("User-Agent",userAgent)
                     .proxy(proxy)
                     .execute();
             if (response.statusCode() == 200) return true;
@@ -47,7 +47,7 @@ public class ParserThread extends Thread {
             id = DBO.getInstance().getSinglePhoto();
             srv = ParserOperator.getINSTANCE().getServer();
             try {
-                Connection.Response doc = Jsoup.connect("https://"+ srv +".postimg.cc/" + id + "/1.jpg")
+                Connection.Response doc = Jsoup.connect("http://"+ srv +".postimg.cc/" + id)
                         .headers(HTTPHeaders.DEFAULT_HEADERS)
                         .header("User-Agent", userAgent)
                         .followRedirects(true)
@@ -67,7 +67,7 @@ public class ParserThread extends Thread {
                 e.printStackTrace();
             }
             try {
-                Thread.sleep(ThreadLocalRandom.current().nextInt(4000, 10000 + 1));
+                Thread.sleep(ThreadLocalRandom.current().nextInt(4000, 9000 + 1));
             } catch (InterruptedException e) {
                // e.printStackTrace();
             }

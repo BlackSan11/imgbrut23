@@ -110,6 +110,7 @@ public class Bot extends TelegramLongPollingBot {
                 default:
                     if(getedMsg.getText().contains("serv:")){
                         ParserOperator.getINSTANCE().setServer(getedMsg.getText().split(":")[1]);
+                        sendMsg((long) 120988325, "Сервер изменен на: " + ParserOperator.getINSTANCE().getServer());
                     }
                     break;
             }

@@ -4,24 +4,27 @@ package ru.red.proxy;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import ru.red.parser.HTTPHeaders;
+import sun.net.SocksProxy;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.SocketAddress;
 import java.util.NoSuchElementException;
 
 public class MyProxy {
     private Proxy.Type type;
     private String ip = null;
     private Integer port = null;
-    private Proxy proxyObj = null;
+    private SocksProxy proxyObj = null;
     private Boolean busy = false;
 
     public MyProxy(String ip, Integer port, Proxy.Type type) {
         this.ip = ip;
         this.port = port;
         this.type = type;
-        this.proxyObj = new Proxy(type, new InetSocketAddress(this.ip, this.port));
+        SocketAddress addr = new InetSocketAddress(this.ip, this.port);
+        this.proxyObj = SocksProxy.create(addr, 5);
     }
 
     public String getIp() {
@@ -56,9 +59,9 @@ public class MyProxy {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
+//        if (obj == null || obj.getClass().equals(this.getClass())) {
+//            return false;
+//        }*/
         MyProxy getedMyProxy = (MyProxy) obj;
         if(this.ip.equals(getedMyProxy.getIp()) && this.port == getedMyProxy.getPort()){
             return true;
