@@ -19,6 +19,7 @@ public class MyProxy {
         this.port = port;
     }
 
+
     public Proxy.Type getType() {
         return this.type;
     }
