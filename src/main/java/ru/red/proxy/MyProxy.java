@@ -20,6 +20,7 @@ public class MyProxy {
     }
 
 
+
     public Proxy.Type getType() {
         return this.type;
     }
