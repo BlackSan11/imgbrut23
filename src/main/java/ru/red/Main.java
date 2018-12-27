@@ -27,9 +27,9 @@ public class Main {
         Bot bot;
         while (true){
             System.out.println("перестарт");
-            MyProxy proxyForBot = ProxyStock.getInstance().getFreeOneMyProxy();
+            MyProxy proxyForBot = ProxyStock.getInstance().getOneFreeMyProxy();
             DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
-            defaultBotOptions.setProxyType(DefaultBotOptions.ProxyType.SOCKS5);
+            defaultBotOptions.setProxyType(DefaultBotOptions.ProxyType.HTTP);
             defaultBotOptions.setProxyHost(proxyForBot.getIp());
             defaultBotOptions.setProxyPort(proxyForBot.getPort());
             bot = new Bot(defaultBotOptions);
@@ -41,14 +41,15 @@ public class Main {
                 continue;
             }
         }
-        ProxyStock.getInstance();
+        ParserOperator.getINSTANCE();
+        /*ProxyStock.getInstance();
         ParserOperator.getINSTANCE();
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         Bot finalBot = bot;
         Runnable task = () -> finalBot.sendInfo();
         int initialDelay = 0;
         int period = 10;
-        executor.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.MINUTES);*/
 
     }
 

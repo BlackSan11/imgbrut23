@@ -4,7 +4,7 @@ import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import ru.red.db.DBO;
+
 import java.io.IOException;
 import java.net.Proxy;
 import java.util.concurrent.ThreadLocalRandom;
@@ -25,7 +25,7 @@ public class ParserThread extends Thread {
             Connection.Response response = Jsoup
                     .connect("https://postimg.cc/V0vsQV79")
                     .headers(HTTPHeaders.DEFAULT_HEADERS)
-                    .header("User-Agent",userAgent)
+                    .header("User-Agent", userAgent)
                     .proxy(proxy)
                     .execute();
             if (response.statusCode() == 200) return true;
@@ -37,7 +37,7 @@ public class ParserThread extends Thread {
     }
 
     public void run() {
-        String id,srv;
+        String id, srv;
         while (true) {
             if (!testConnection()) {
                 System.out.println(proxy.address().toString() + " - не прошло тест, поток завершаеться");

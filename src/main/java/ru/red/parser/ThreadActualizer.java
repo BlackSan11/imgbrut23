@@ -27,7 +27,7 @@ public class ThreadActualizer extends Thread {
         while (true) {
             if (ParserOperator.getINSTANCE().getThreadsStartedCount() < ParserOperator.getINSTANCE().getThreadsCount()) {
                 ParserOperator.getINSTANCE().upThreadsStartedCount();
-                new ParserThread(ProxyStock.getInstance().getFreeOneMyProxy().getProxyObj(), linkedList.get(ThreadLocalRandom.current().nextInt(linkedList.size() - 1))).start();
+                new ParserThread(ProxyStock.getInstance().getOneFreeMyProxy().getProxyObj(), linkedList.get(ThreadLocalRandom.current().nextInt(linkedList.size() - 1))).start();
             } else {
                 try {
                     Thread.sleep(15000);

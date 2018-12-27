@@ -13,6 +13,7 @@ public class MyProxy {
     private String ip = null;
     private Integer port = null;
     private Proxy proxyObj = null;
+    private boolean bysu = false;
 
     public MyProxy(String ip, Integer port) {
         this.ip = ip;
@@ -60,6 +61,14 @@ public class MyProxy {
     @Override
     public int hashCode() {
         return Objects.hash(ip, port);
+    }
+
+    public void setBysu(boolean bysu) {
+        this.bysu = true;
+    }
+
+    public boolean isBysu() {
+        return bysu;
     }
 
     public String getIp() {
